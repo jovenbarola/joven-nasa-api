@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+  <script src="https://momentjs.com/downloads/moment.min.js"></script>
+  <style>
+    .img-thumb {
+        width: 200px;
+        height: 200px;
+    }
+  </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td><label for="tdate">Date</label><input type="date" id="tdate" name="tdate" /></td>
+            <td><label for="tlat">Latitude</label><input type="text" id="tlat" name="tlat" value="15.1731" /></td>
+            <td><label for="tlon">Longitude</label><input type="text" id="tlon" name="tlon" value="120.6032" /></td>
+            <td><button type="button" onclick="process()">Process</button></td>
+        </tr>
+    </table>
+
+    <h2>Results:</h2>
+    <div class="result"></div>
+
+<script>
+    var global_config = {};
+    function process() {
+        var tdate = $('#tdate').val();
+        tdate = moment(tdate).format('YYYY-MM-DD');
+        var tlon = $('#tlon').val();
+        var tlat = $('#tlat').val();
+
+        $.get('https://api.nasa.gov/planetary/earth/imagery?lon='+ tlon +'&lat='+ tlat +'&date='+ tdate +'&api_key='+ global_config.NASA_API_KEY, function(data) {
+            if (data.length > 0) {
+                debugger
+                var shtml = '<table>';
+                // data.forEach((item) => {
+                //     var year = moment(item.date).format('YYYY');
+                //     var month = moment(item.date).format('MM');
+                //     var day = moment(item.date).format('DD');
+                //     var archive = `https://epic.gsfc.nasa.gov/archive/natural/${year}/${month}/${day}/png/${item.image}.png`;
+                //     shtml += '<tr><td><img class="img-thumb" src="'+ archive +'" ondblclick="openimage(this)" /></td><td>'+ item.date +'</td></tr>';
+                // });
+                shtml += '</table>';
+                $('.result').append(shtml)
+            } else {
+                $('.result').text('No result');
+            }
+
+        });
+    }
+
+    function openimage(el) {
+        location.href=$(el).attr('src')
+    }
+
+    $(document).ready(function() {
+        $.getJSON('nasa.json', function(data) {
+            global_config = data;
+        }).fail(function() {
+            document.write('Invalid or missing configuration')
+        })
+    })
+</script>
+
+</body>
+</html>
