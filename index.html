@@ -4,60 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>NASA Open API Version 2 - Testing</title>
-  <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
-  <script src="https://momentjs.com/downloads/moment.min.js"></script>
-  <style>
-    .img-thumb {
-        width: 200px;
-        height: 200px;
-    }
-  </style>
 </head>
 <body>
-    <table>
+    <h1>NASA Open API Version 2 - Testing</h1>
+    <table border="1">
         <tr>
-            <td>Date</td>
-            <td><input type="date" id="tdate" title="date" /></td>
-            <td><button type="button" onclick="process()">Process</button></td>
+            <td><a href="home.html" target="myframe">Home</a></td>
+            <td><a href="imagery.html" target="myframe">Imagery</a></td>
+            <td><a href="link.html" target="myframe">Link 1</a></td>
+            <td><a href="link.html" target="myframe">Link 2</a></td>
+        </tr>
+        <tr>
+            <td colspan="100">
+                <iframe src="home.html" frameborder="0" name="myframe" width="1000" height="800"></iframe>
+            </td>
         </tr>
     </table>
-
-    <h2>Results:</h2>
-    <div class="result"></div>
-
-<script>
-    var global_config = {};
-    function process() {
-        var tdate = $('#tdate').val();
-        tdate = moment(tdate).format('YYYY-MM-DD');
-
-        $.get('https://api.nasa.gov/EPIC/api/natural/date/'+ tdate +'?api_key='+ global_config.NASA_API_KEY, function(data) {
-            if (data.length > 0) {
-                var shtml = '<table>';
-                data.forEach((item) => {
-                    var year = moment(item.date).format('YYYY');
-                    var month = moment(item.date).format('MM');
-                    var day = moment(item.date).format('DD');
-                    var archive = `https://epic.gsfc.nasa.gov/archive/natural/${year}/${month}/${day}/png/${item.image}.png`;
-                    shtml += '<tr><td><img class="img-thumb" src="'+ archive +'" /></td><td>'+ item.date +'</td></tr>';
-                });
-                shtml += '</table>';
-                $('.result').append(shtml)
-            } else {
-                $('.result').text('No result');
-            }
-
-        });
-    }
-
-    $(document).ready(function() {
-        $.getJSON('nasa.json', function(data) {
-            global_config = data;
-        }).fail(function() {
-            document.write('Invalid or missing configuration')
-        })
-    })
-</script>
 
 </body>
 </html>
